@@ -24,8 +24,8 @@ API profissional para oficinas mecânicas com integração WhatsApp Business e s
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/seu-usuario/reparaja-api.git
-cd reparaja-api
+git clone https://github.com/seu-usuario/reparaja.git
+cd reparaja
 ```
 
 2. **Instale as dependências**
@@ -104,7 +104,7 @@ A API usa JWT Bearer tokens:
 ```bash
 curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
      -H "X-Tenant-ID: tn_123" \
-     https://api.reparaja.com.br/v1/vehicles
+     https://api.reparaja.com/v1/vehicles
 ```
 
 ### Endpoints Principais
@@ -228,7 +228,7 @@ tail -f logs/error.log
 ### Health Check
 
 ```bash
-curl https://api.reparaja.com.br/health
+curl https://api.reparaja.com/health
 ```
 
 ## 🧪 Testes
@@ -283,9 +283,9 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 🆘 Suporte
 
-- **Email**: suporte@reparaja.com.br
-- **Documentação**: https://docs.reparaja.com.br
-- **Status**: https://status.reparaja.com.br
+- **Email**: suporte@reparaja.com
+- **Documentação**: https://docs.reparaja.com
+- **Status**: https://status.reparaja.com
 
 ## 🏢 Sobre o Repara-Já
 
