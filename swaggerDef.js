@@ -81,6 +81,11 @@ const options = {
               format: 'uuid',
               description: 'ID do tenant'
             },
+            workshop_id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID da oficina onde o veículo está sendo atendido'
+            },
             code16: {
               type: 'string',
               maxLength: 16,
@@ -160,6 +165,245 @@ const options = {
             }
           },
           required: ['brand', 'model', 'year', 'license_plate']
+        },
+        Workshop: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID único da oficina'
+            },
+            tenant_id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID do tenant proprietário'
+            },
+            name: {
+              type: 'string',
+              minLength: 2,
+              description: 'Nome da oficina'
+            },
+            cnpj: {
+              type: 'string',
+              pattern: '^\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2}$',
+              description: 'CNPJ da oficina (formato XX.XXX.XXX/XXXX-XX)'
+            },
+            corporate_name: {
+              type: 'string',
+              description: 'Razão social da oficina'
+            },
+            address: {
+              type: 'object',
+              description: 'Endereço completo da oficina',
+              properties: {
+                street: {
+                  type: 'string',
+                  description: 'Rua'
+                },
+                number: {
+                  type: 'string',
+                  description: 'Número'
+                },
+                complement: {
+                  type: 'string',
+                  description: 'Complemento'
+                },
+                neighborhood: {
+                  type: 'string',
+                  description: 'Bairro'
+                },
+                city: {
+                  type: 'string',
+                  description: 'Cidade'
+                },
+                state: {
+                  type: 'string',
+                  description: 'Estado'
+                },
+                zip_code: {
+                  type: 'string',
+                  description: 'CEP'
+                },
+                coordinates: {
+                  type: 'object',
+                  description: 'Coordenadas geográficas',
+                  properties: {
+                    lat: {
+                      type: 'number',
+                      description: 'Latitude'
+                    },
+                    lng: {
+                      type: 'number',
+                      description: 'Longitude'
+                    }
+                  }
+                }
+              }
+            },
+            phone: {
+              type: 'string',
+              description: 'Telefone da oficina'
+            },
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'Email da oficina'
+            },
+            website: {
+              type: 'string',
+              format: 'uri',
+              description: 'Website da oficina'
+            },
+            type: {
+              type: 'string',
+              enum: ['main', 'branch', 'partner'],
+              default: 'main',
+              description: 'Tipo da oficina'
+            },
+            status: {
+              type: 'string',
+              enum: ['active', 'inactive', 'suspended'],
+              default: 'active',
+              description: 'Status da oficina'
+            },
+            timezone: {
+              type: 'string',
+              default: 'America/Sao_Paulo',
+              description: 'Fuso horário da oficina'
+            },
+            working_hours: {
+              type: 'object',
+              description: 'Horário de funcionamento',
+              properties: {
+                monday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string',
+                      description: 'Horário de abertura'
+                    },
+                    close: {
+                      type: 'string',
+                      description: 'Horário de fechamento'
+                    }
+                  }
+                },
+                tuesday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string'
+                    },
+                    close: {
+                      type: 'string'
+                    }
+                  }
+                },
+                wednesday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string'
+                    },
+                    close: {
+                      type: 'string'
+                    }
+                  }
+                },
+                thursday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string'
+                    },
+                    close: {
+                      type: 'string'
+                    }
+                  }
+                },
+                friday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string'
+                    },
+                    close: {
+                      type: 'string'
+                    }
+                  }
+                },
+                saturday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string'
+                    },
+                    close: {
+                      type: 'string'
+                    }
+                  }
+                },
+                sunday: {
+                  type: 'object',
+                  properties: {
+                    open: {
+                      type: 'string'
+                    },
+                    close: {
+                      type: 'string'
+                    }
+                  }
+                }
+              }
+            },
+            max_vehicles_per_day: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 1000,
+              default: 50,
+              description: 'Máximo de veículos atendidos por dia'
+            },
+            max_mechanics: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 10,
+              description: 'Máximo de mecânicos na oficina'
+            },
+            specialties: {
+              type: 'array',
+              items: {
+                type: 'string'
+              },
+              description: 'Especialidades da oficina'
+            },
+            erp_id: {
+              type: 'string',
+              description: 'ID da oficina no sistema ERP'
+            },
+            erp_sync_enabled: {
+              type: 'boolean',
+              default: false,
+              description: 'Sincronização com ERP habilitada'
+            },
+            last_erp_sync: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Última sincronização com ERP'
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data de criação'
+            },
+            updated_at: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data da última atualização'
+            }
+          },
+          required: ['name']
         },
         Message: {
           type: 'object',
@@ -270,6 +514,134 @@ const options = {
               type: 'string',
               format: 'date-time',
               description: 'Data de criação'
+            }
+          }
+        },
+        Order: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID único da ordem de serviço'
+            },
+            tenant_id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID do tenant'
+            },
+            workshop_id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID da oficina onde o serviço será realizado'
+            },
+            vehicle_id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID do veículo'
+            },
+            customer_name: {
+              type: 'string',
+              description: 'Nome do cliente'
+            },
+            customer_phone: {
+              type: 'string',
+              description: 'Telefone do cliente'
+            },
+            customer_email: {
+              type: 'string',
+              format: 'email',
+              description: 'Email do cliente'
+            },
+            service_description: {
+              type: 'string',
+              description: 'Descrição do serviço'
+            },
+            status: {
+              type: 'string',
+              enum: ['pending', 'in_progress', 'completed', 'cancelled'],
+              description: 'Status da ordem de serviço'
+            },
+            total_amount: {
+              type: 'number',
+              minimum: 0,
+              description: 'Valor total do serviço'
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data de criação'
+            },
+            updated_at: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data da última atualização'
+            }
+          }
+        },
+        User: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID único do usuário'
+            },
+            tenant_id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'ID do tenant'
+            },
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'Email do usuário'
+            },
+            name: {
+              type: 'string',
+              description: 'Nome completo do usuário'
+            },
+            role: {
+              type: 'string',
+              enum: ['admin', 'manager', 'user', 'viewer'],
+              description: 'Papel do usuário no sistema'
+            },
+            status: {
+              type: 'string',
+              enum: ['active', 'inactive', 'locked', 'deleted'],
+              description: 'Status da conta do usuário'
+            },
+            last_login: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data do último login'
+            },
+            login_attempts: {
+              type: 'integer',
+              description: 'Número de tentativas de login falhadas'
+            },
+            locked_until: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data até quando a conta está bloqueada'
+            },
+            mfa_enabled: {
+              type: 'boolean',
+              description: 'Se autenticação de dois fatores está habilitada'
+            },
+            preferences: {
+              type: 'object',
+              description: 'Preferências do usuário'
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data de criação'
+            },
+            updated_at: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Data da última atualização'
             }
           }
         }

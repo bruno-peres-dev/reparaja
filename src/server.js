@@ -17,6 +17,9 @@ const messagesRoutes = require('./routes/messages');
 const webhooksRoutes = require('./routes/webhooks');
 const utilsRoutes = require('./routes/utils');
 const mediaRoutes = require('./routes/media');
+const workshopsRoutes = require('./routes/workshops');
+const ordersRoutes = require('./routes/orders');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -116,11 +119,14 @@ app.get('/api-docs.json', (req, res) => {
 });
 
 // Rotas da API v1
+app.use('/v1/auth', authRoutes);
 app.use('/v1/vehicles', vehiclesRoutes);
 app.use('/v1/messages', messagesRoutes);
 app.use('/v1/webhooks', webhooksRoutes);
 app.use('/v1/utils', utilsRoutes);
 app.use('/v1/media', mediaRoutes);
+app.use('/v1/workshops', workshopsRoutes);
+app.use('/v1/orders', ordersRoutes);
 
 // Middleware de tratamento de erros
 app.use((err, req, res, next) => {
