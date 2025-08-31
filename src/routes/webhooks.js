@@ -6,7 +6,47 @@ const logger = require('../utils/logger');
 const router = express.Router();
 
 /**
- * GET /webhooks/whatsapp - Verificação do webhook do WhatsApp
+ * @swagger
+ * /v1/webhooks/whatsapp:
+ *   get:
+ *     summary: Verificação do webhook do WhatsApp
+ *     description: Endpoint para verificação do webhook do WhatsApp Business API
+ *     tags: [Webhooks]
+ *     parameters:
+ *       - in: query
+ *         name: hub.mode
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [subscribe]
+ *         description: Modo de verificação
+ *       - in: query
+ *         name: hub.verify_token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Token de verificação
+ *       - in: query
+ *         name: hub.challenge
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Desafio para verificação
+ *     responses:
+ *       200:
+ *         description: Webhook verificado com sucesso
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "challenge_string"
+ *       403:
+ *         description: Verificação falhou
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Forbidden"
  */
 router.get('/whatsapp', (req, res) => {
   const mode = req.query['hub.mode'];
@@ -28,7 +68,41 @@ router.get('/whatsapp', (req, res) => {
 });
 
 /**
- * POST /webhooks/whatsapp - Recebimento de webhooks do WhatsApp
+ * @swagger
+ * /v1/webhooks/whatsapp:
+ *   post:
+ *     summary: Recebimento de webhooks do WhatsApp
+ *     description: Endpoint para receber webhooks do WhatsApp Business API
+ *     tags: [Webhooks]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             description: Payload do webhook do WhatsApp
+ *     responses:
+ *       200:
+ *         description: Webhook processado com sucesso
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "OK"
+ *       401:
+ *         description: Assinatura HMAC inválida
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Unauthorized"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Internal Server Error"
  */
 router.post('/whatsapp', (req, res) => {
   try {
@@ -55,7 +129,71 @@ router.post('/whatsapp', (req, res) => {
 });
 
 /**
- * POST /webhooks/partners - Cadastro de webhooks de parceiros
+ * @swagger
+ * /v1/webhooks/partners:
+ *   post:
+ *     summary: Cadastrar webhook de parceiro
+ *     description: Cadastra um novo webhook para receber eventos de parceiros
+ *     tags: [Webhooks]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - url
+ *               - events
+ *               - secret
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 format: uri
+ *                 description: URL do webhook
+ *                 example: "https://api.parceiro.com/webhook"
+ *               events:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [message.delivered, message.read, message.failed, button.clicked, list.selected, order.updated, order.approved, order.completed]
+ *                 description: Lista de eventos para receber
+ *                 example: ["message.delivered", "message.read", "order.updated"]
+ *               secret:
+ *                 type: string
+ *                 description: Chave secreta para assinatura HMAC
+ *                 example: "webhook_secret_key_123"
+ *     responses:
+ *       201:
+ *         description: Webhook cadastrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID do webhook
+ *                 url:
+ *                   type: string
+ *                   format: uri
+ *                 events:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 active:
+ *                   type: boolean
+ *       400:
+ *         description: Dados inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/partners', (req, res) => {
   try {
@@ -152,7 +290,50 @@ router.post('/partners', (req, res) => {
 });
 
 /**
- * GET /webhooks/partners - Lista webhooks de parceiros
+ * @swagger
+ * /v1/webhooks/partners:
+ *   get:
+ *     summary: Listar webhooks de parceiros
+ *     description: Lista todos os webhooks de parceiros cadastrados
+ *     tags: [Webhooks]
+ *     responses:
+ *       200:
+ *         description: Lista de webhooks
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 webhooks:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID do webhook
+ *                       url:
+ *                         type: string
+ *                         format: uri
+ *                         description: URL do webhook
+ *                       events:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                         description: Eventos configurados
+ *                       active:
+ *                         type: boolean
+ *                         description: Status do webhook
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Data de criação
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get('/partners', (req, res) => {
   try {
@@ -191,7 +372,34 @@ router.get('/partners', (req, res) => {
 });
 
 /**
- * DELETE /webhooks/partners/:id - Remove webhook de parceiro
+ * @swagger
+ * /v1/webhooks/partners/{id}:
+ *   delete:
+ *     summary: Remover webhook de parceiro
+ *     description: Remove um webhook de parceiro específico
+ *     tags: [Webhooks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do webhook
+ *     responses:
+ *       204:
+ *         description: Webhook removido com sucesso
+ *       404:
+ *         description: Webhook não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.delete('/partners/:id', (req, res) => {
   try {
