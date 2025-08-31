@@ -73,6 +73,10 @@ jspm_packages/
 
 # dotenv environment variables file
 .env.test
+.env.test.local
+
+# Docker test files
+docker-compose.test.override.yml
 
 # parcel-bundler cache
 .cache
